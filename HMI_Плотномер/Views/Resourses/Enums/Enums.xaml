@@ -112,4 +112,8 @@
         <sys1:String>Неактивен</sys1:String>
         <sys1:String>Активен</sys1:String>
     </col1:ArrayList>
+    <col1:ArrayList x:Key="AnalogInputNums">
+        <sys1:String>Группа 0</sys1:String>
+        <sys1:String>Группа 1</sys1:String>
+    </col1:ArrayList>
 </ResourceDictionary>

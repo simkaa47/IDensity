@@ -1541,9 +1541,9 @@
                     <!--#endregion-->
                     <!--#region АНАЛОГОВЫЕ МОДУЛИ -->
                     <TabItem Header="АНАЛОГОВЫЕ МОДУЛИ">                        
-                            <DockPanel>                                
+                            <StackPanel>                                
                                 <!--#region  Аналоговые входы -->
-                                <GroupBox DockPanel.Dock="Top" Header="АНАЛОГОВЫЕ ВХОДЫ">
+                                <GroupBox  Header="АНАЛОГОВЫЕ ВХОДЫ">
                                     <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding AnalogInputs}" >
                                         <DataGrid.Columns>
                                             <!--#region Id -->
@@ -1595,7 +1595,7 @@
                                 </GroupBox>
                                 <!--#endregion-->
                                 <!--#region Аналоговые выходы -->
-                                <GroupBox DockPanel.Dock="Bottom" Header="АНАЛОГОВЫЕ ВЫХОДЫ">
+                                <GroupBox   Header="АНАЛОГОВЫЕ ВЫХОДЫ">
                                     <DataGrid  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding AnalogOutputs}">
                                        <DataGrid.Columns>
                                        <!--#region Id -->
@@ -1799,7 +1799,20 @@
                                     </DataGrid>
                                 </GroupBox>
                                 <!--#endregion-->
-                            </DockPanel>                        
+                                <GroupBox  Header="НАСТРОЙКИ ВХОДА РАСХОДОМЕРА">
+                                <ListBox DataContext="{Binding mainModel.ConsInputSettings}">
+                                    <ListBoxItem HorizontalContentAlignment="Stretch" DataContext="{Binding InputNum}">
+                                        <uc:Parameter Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.SetAiNumCommand}"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem HorizontalContentAlignment="Stretch" DataContext="{Binding A}">
+                                        <uc:Parameter Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.SetACommand}"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem HorizontalContentAlignment="Stretch" DataContext="{Binding B}">
+                                        <uc:Parameter Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.SetBCommand}"/>
+                                    </ListBoxItem>
+                                </ListBox>
+                                </GroupBox>
+                            </StackPanel>                        
                     </TabItem>
                     <!--#endregion-->
                     <!--#region Релейный выход -->

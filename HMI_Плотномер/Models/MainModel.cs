@@ -1,5 +1,6 @@
 ﻿using IDensity.AddClasses;
 using IDensity.AddClasses.AdcBoardSettings;
+using IDensity.AddClasses.AnalogInOut;
 using IDensity.AddClasses.Standartisation;
 using IDensity.Models.XML;
 using System;
@@ -42,6 +43,7 @@ namespace IDensity.Models
             CalibrDataDescribe();
             AdcSettingsEventDescribe();
             MeasUnitSettingsDescribe();
+            ConsInputSettings.SetConsInputEvent += SetConsInputSettings;
         }
 
 
@@ -280,6 +282,11 @@ namespace IDensity.Models
         #endregion
 
 
+        #endregion
+
+        #region Настройки входа расходомера
+        public ConsInputSettings ConsInputSettings { get; } = new ConsInputSettings();
+        
         #endregion
 
 
@@ -583,6 +590,14 @@ namespace IDensity.Models
         {
             if (CommMode.EthEnable) Tcp.SwitchRelay(value);
             //else if (CommMode.RsEnable) rs.SetMeasUnitsSettings(settings);
+        }
+        #endregion
+
+        #region Команда "Записать настройки входа расходомера"
+        public void SetConsInputSettings(ConsInputSettings settings)
+        {
+            if (CommMode.EthEnable) Tcp.SetConsInputSettings(settings);
+           // else if (CommMode.RsEnable) rs.SetMeasUnitsSettings(settings);
         }
         #endregion
         #endregion

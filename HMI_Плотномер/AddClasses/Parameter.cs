@@ -39,8 +39,9 @@ namespace IDensity.AddClasses
         public bool ValidationOk { get => _validationOk; set => Set(ref _validationOk, value);  } 
 
         #region Идетификатор параметра
-        public string Id { get; } 
+        public string Id { get; }
         #endregion
+        
         public Parameter(string id, string description, T minValue, T maxValue, int regNum, string regType)
         {
             this.Id = id;
@@ -59,8 +60,8 @@ namespace IDensity.AddClasses
         public Parameter()
         {
 
-        } 
-        #endregion
+        }
+        #endregion       
 
         #region Описание
         string _description = "";

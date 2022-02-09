@@ -1,5 +1,6 @@
 ﻿using IDensity.AddClasses;
 using IDensity.AddClasses.AdcBoardSettings;
+using IDensity.AddClasses.AnalogInOut;
 using IDensity.AddClasses.Standartisation;
 using System;
 using System.Collections.Generic;
@@ -599,6 +600,11 @@ namespace IDensity.Models
             list = GetNumber("preamp_gain", 1, 1);
             if (list == null) return;
             model.AdcBoardSettings.PreampGain.Value = (ushort)list[0][0];
+            list = GetNumber("cons_input", 3, 1);
+            if (list == null) return;
+            model.ConsInputSettings.InputNum.Value = (int)list[0][0];
+            model.ConsInputSettings.A.Value = list[0][1];
+            model.ConsInputSettings.B.Value = list[0][2];
             // локальная функция
             List<List<float>> GetNumber(string id, int parNum, int count)
             {
@@ -905,6 +911,14 @@ namespace IDensity.Models
         {
             var str = $"CMND,RLS,{value}#";
             commands.Enqueue(new TcpWriteCommand((buf) =>SendTlg(buf), Encoding.ASCII.GetBytes(str)));
+        }
+        #endregion
+
+        #region Команда "Записать настройки входа расходомера"
+        public void SetConsInputSettings(ConsInputSettings settings)
+        {
+            var str = $"SETT,cons_input={settings.InputNum.Value.ToString().Replace(",",".")},{settings.A.Value.ToString().Replace(",", ".")},{settings.B.Value.ToString().Replace(",", ".")}";
+            commands.Enqueue(new TcpWriteCommand((buf) => { SendTlg(buf); GetSettings7(); }, Encoding.ASCII.GetBytes(str + "#")));
         }
         #endregion
 
