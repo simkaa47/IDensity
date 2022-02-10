@@ -278,7 +278,7 @@ namespace IDensity.Models
                 .Where(str => float.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out temp)).
                 Select(str => temp).
                 ToArray();
-            if (nums.Length == 11)
+            if (nums.Length == 14)
             {
                 model.CycleMeasStatus.Value = nums[8] > 0 ? true : false;
 
@@ -291,8 +291,11 @@ namespace IDensity.Models
                     model.PhysValueAvg.Value = nums[7];
                     model.ContetrationValueAvg.Value = nums[9];
                     model.ContetrationValueCur.Value = nums[10];
-                }              
-            
+                    model.ConsMassCommon.Value = nums[12];
+                    model.ConsMassSolid.Value = nums[13];
+                }
+                model.ConsInputSettings.CurConsumtion.Value = nums[11];
+
             }
         }
         #endregion
@@ -600,11 +603,12 @@ namespace IDensity.Models
             list = GetNumber("preamp_gain", 1, 1);
             if (list == null) return;
             model.AdcBoardSettings.PreampGain.Value = (ushort)list[0][0];
-            list = GetNumber("cons_input", 3, 1);
+            list = GetNumber("cons_input", 4, 1);
             if (list == null) return;
             model.ConsInputSettings.InputNum.Value = (int)list[0][0];
-            model.ConsInputSettings.A.Value = list[0][1];
-            model.ConsInputSettings.B.Value = list[0][2];
+            model.ConsInputSettings.Activity.Value = list[0][1]>0?true:false;
+            model.ConsInputSettings.A.Value = list[0][2];
+            model.ConsInputSettings.B.Value = list[0][3];
             // локальная функция
             List<List<float>> GetNumber(string id, int parNum, int count)
             {
@@ -917,7 +921,7 @@ namespace IDensity.Models
         #region Команда "Записать настройки входа расходомера"
         public void SetConsInputSettings(ConsInputSettings settings)
         {
-            var str = $"SETT,cons_input={settings.InputNum.Value.ToString().Replace(",",".")},{settings.A.Value.ToString().Replace(",", ".")},{settings.B.Value.ToString().Replace(",", ".")}";
+            var str = $"SETT,cons_input={settings.InputNum.Value},{(settings.Activity.Value?1:0)},{settings.A.Value.ToString().Replace(",", ".")},{settings.B.Value.ToString().Replace(",", ".")}";
             commands.Enqueue(new TcpWriteCommand((buf) => { SendTlg(buf); GetSettings7(); }, Encoding.ASCII.GetBytes(str + "#")));
         }
         #endregion

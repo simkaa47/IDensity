@@ -98,6 +98,13 @@ namespace IDensity.Models
         public Parameter<float> ContetrationValueAvg { get; } = new Parameter<float>("ContetrationValueAvg", "Усреднненное значение концентрации", 0, float.PositiveInfinity, 29, "read");
         #endregion
 
+        #region Общий массовый расход
+        public Parameter<float> ConsMassCommon { get; } = new Parameter<float>("ConsMassCommon", "Общий массовый расход", float.MinValue, float.MaxValue, 39, "read");
+        #endregion
+        #region Массовый расход твердого
+        public Parameter<float> ConsMassSolid { get; } = new Parameter<float>("ConsMassSolid", "Массовый расход твердого", float.MinValue, float.MaxValue, 41, "read");
+        #endregion
+
         #region Статус циклических измерений
         public Parameter<bool> CycleMeasStatus { get; } = new Parameter<bool>("CycleMeasStatus", "Статус циклических измерений", false, true, 1, "hold");
         #endregion
@@ -597,7 +604,7 @@ namespace IDensity.Models
         public void SetConsInputSettings(ConsInputSettings settings)
         {
             if (CommMode.EthEnable) Tcp.SetConsInputSettings(settings);
-           // else if (CommMode.RsEnable) rs.SetMeasUnitsSettings(settings);
+           else if (CommMode.RsEnable) rs.SetConsInputSettings(settings);
         }
         #endregion
         #endregion

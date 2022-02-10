@@ -7,6 +7,7 @@ using System.Threading;
 using EasyModbus;
 using IDensity.AddClasses;
 using IDensity.AddClasses.AdcBoardSettings;
+using IDensity.AddClasses.AnalogInOut;
 using IDensity.AddClasses.Standartisation;
 
 namespace IDensity.Models
@@ -217,8 +218,9 @@ namespace IDensity.Models
                 model.AnalogGroups[i].AO.VoltageTest.Value = readRegs[startNumReg + i * 2];
                 model.AnalogGroups[i].AO.AdcValue.Value = readRegs[startNumReg + 4 + i * 2];
                 model.AnalogGroups[i].AO.VoltageDac.Value = readRegs[startNumReg + 8 + i * 2];
-                model.AnalogGroups[i].AI.AdcValue.Value = readRegs[startNumReg + 5 + i * 2];
+                model.AnalogGroups[i].AI.AdcValue.Value = readRegs[startNumReg + 5 + i * 2];                
             }
+            model.ConsInputSettings.CurConsumtion.Value = GetFloatFromUshorts(readRegs, model.ConsInputSettings.CurConsumtion.RegNum);
         }
         #endregion
 
@@ -251,6 +253,8 @@ namespace IDensity.Models
                 model.PhysValueAvg.Value = GetFloatFromUshorts(SelectRegs(model.PhysValueAvg.RegType), model.PhysValueAvg.RegNum);
                 model.ContetrationValueCur.Value = GetFloatFromUshorts(SelectRegs(model.ContetrationValueCur.RegType), model.ContetrationValueCur.RegNum);
                 model.ContetrationValueAvg.Value = GetFloatFromUshorts(SelectRegs(model.ContetrationValueAvg.RegType), model.ContetrationValueAvg.RegNum);
+                model.ConsMassCommon.Value = GetFloatFromUshorts(SelectRegs(model.ConsMassCommon.RegType), model.ConsMassCommon.RegNum);
+                model.ConsMassSolid.Value = GetFloatFromUshorts(SelectRegs(model.ConsMassSolid.RegType), model.ConsMassSolid.RegNum);
             }            
             
         }
@@ -355,6 +359,7 @@ namespace IDensity.Models
                 GetUdpAddr();
                 GetAdcBoardSettings();
                 GetMeasUnitSettingsAll();
+                GetConsInputSettings();
             }
         }
         #region Данные измерительных настроек
@@ -577,6 +582,19 @@ namespace IDensity.Models
             model.MeasUnitSettings[index].Id.Value = index;
             model.MeasUnitSettings[index].A.Value = GetFloatFromUshorts(holdRegs, model.MeasUnitSettings[0].A.RegNum);
             model.MeasUnitSettings[index].B.Value = GetFloatFromUshorts(holdRegs, model.MeasUnitSettings[0].B.RegNum);
+            model.SettingsReaded = true;
+        }
+        #endregion
+
+        #region Данные настроек входа расходомера
+        void GetConsInputSettings()
+        {
+            model.SettingsReaded = false;
+            ReadHoldRegs(model.ConsInputSettings.InputNum.RegNum, 8);
+            model.ConsInputSettings.InputNum.Value = holdRegs[model.ConsInputSettings.InputNum.RegNum];
+            model.ConsInputSettings.Activity.Value = holdRegs[model.ConsInputSettings.Activity.RegNum]>0? true:false;
+            model.ConsInputSettings.A.Value = GetFloatFromUshorts(holdRegs, model.ConsInputSettings.A.RegNum);
+            model.ConsInputSettings.B.Value = GetFloatFromUshorts(holdRegs, model.ConsInputSettings.B.RegNum);
             model.SettingsReaded = true;
         }
         #endregion
@@ -918,6 +936,21 @@ namespace IDensity.Models
             }, 0, 0));
         }
 
+        #endregion
+
+        #region Команда "Записать настройки входа расходомера"
+        public void SetConsInputSettings(ConsInputSettings settings)
+        {
+            commands.Enqueue(new Command((p1, p2) =>
+            {
+                holdRegs[model.ConsInputSettings.InputNum.RegNum] = (ushort)settings.InputNum.Value;
+                holdRegs[model.ConsInputSettings.Activity.RegNum] = (ushort)(settings.Activity.Value?1:0);
+                GetUshortsFromFloat(holdRegs, settings.A.RegNum, settings.A.Value);
+                GetUshortsFromFloat(holdRegs, settings.B.RegNum, settings.B.Value);
+                WriteRegs(model.ConsInputSettings.InputNum.RegNum, 8);
+                GetConsInputSettings();
+            }, 0, 0));
+        }
         #endregion
         #endregion
     }

@@ -22,6 +22,12 @@ namespace IDensity.AddClasses.AnalogInOut
         /// </summary>
         public Parameter<int> InputNum { get; set; } = new Parameter<int>("ConsInputNum", "Номер аналогового входа", 0, 1, 125, "hold");
         #endregion
+        #region Актвность
+        public Parameter<bool> Activity { get; set; } = new Parameter<bool>("ConsActivity", "Активность входа расходомера", false, true, 126, "hold");
+        #endregion
+        #region Текущее значение расхода
+        public Parameter<float> CurConsumtion { get; } = new Parameter<float>("CurConsumtion", "Текущеее значение расхода", float.MinValue, float.MaxValue, 37, "read") {OnlyRead = true };
+        #endregion
         #region Коэффициент a
         /// <summary>
         /// Коэффициент a
@@ -41,6 +47,14 @@ namespace IDensity.AddClasses.AnalogInOut
         {
             var sett = this.Clone() as ConsInputSettings;
             sett.InputNum.Value = InputNum.WriteValue;
+            SetConsInputEvent?.Invoke(sett);
+        }, par => true));
+        #endregion
+        #region Записать активность
+        RelayCommand _setActivityCommand;
+        public RelayCommand SetActivityCommand => _setActivityCommand ?? (_setActivityCommand = new RelayCommand(par =>
+        {
+            var sett = this.Clone() as ConsInputSettings;           
             SetConsInputEvent?.Invoke(sett);
         }, par => true));
         #endregion
@@ -64,11 +78,13 @@ namespace IDensity.AddClasses.AnalogInOut
         #endregion
         #endregion
 
+
         public object Clone()
         {
             return new ConsInputSettings()
             {
                 InputNum = this.InputNum.Clone() as Parameter<int>,
+                Activity = this.Activity.Clone() as Parameter<bool>,
                 A = this.A.Clone() as Parameter<float>,
                 B = this.B.Clone() as Parameter<float>
             };

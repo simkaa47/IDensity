@@ -276,7 +276,8 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>                            
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
                         <!--#region Мгновенное значение ФВ -->
                         <UserControl Margin="5"                                    
@@ -316,11 +317,24 @@
                                      Template="{StaticResource NumericDisplay}"                                     
                                      DataContext="{Binding mainModel.ContetrationValueAvg}"/>
                         <!--#endregion-->
+                        <!--#region Массовый расход -->
+                        <UserControl Grid.Row="2"
+                                     Margin="5"
+                                     Template="{StaticResource NumericDisplay}"                                     
+                                     DataContext="{Binding mainModel.ConsMassCommon}"/>
+                        <!--#endregion-->
+                        <!--#region Массовый расход твердого -->
+                        <UserControl Grid.Row="2"
+                                     Grid.Column="1"
+                                     Margin="5"
+                                     Template="{StaticResource NumericDisplay}"                                     
+                                     DataContext="{Binding mainModel.ConsMassSolid}"/>
+                        <!--#endregion-->
                     </Grid>
                     <!--#endregion-->                    
 
                     <!--#region Кнопки управления -->
-                    <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid Grid.Row="1" Grid.Column="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
@@ -533,7 +547,7 @@
             </TabItem>
             <!--#endregion-->
             <!--#region Расширенные настройки -->
-            <TabItem Header="РАСШИРЕННЫЕ НАСТРОЙКИ" Visibility="{Binding CurUser, Converter={StaticResource UserToVisibility}, ConverterParameter=Администратор}">
+            <TabItem Header="РАСШИРЕННЫЕ НАСТРОЙКИ">
                 <TabItem.Resources>
                     <!--#region Общий стиль для DaraGrid -->
                     <Style TargetType="DataGrid">
@@ -1799,20 +1813,43 @@
                                     </DataGrid>
                                 </GroupBox>
                                 <!--#endregion-->
-                                <GroupBox  Header="НАСТРОЙКИ ВХОДА РАСХОДОМЕРА">
+                            <!--#region НАСТРОЙКИ ВХОДА РАСХОДОМЕРА -->
+                            <GroupBox  Header="НАСТРОЙКИ ВХОДА РАСХОДОМЕРА">
                                 <ListBox DataContext="{Binding mainModel.ConsInputSettings}">
+                                    <!--#region Активность -->
+                                    <ListBoxItem HorizontalContentAlignment="Stretch" DataContext="{Binding Activity}">
+                                        <DockPanel>
+                                            <TextBlock Text="{Binding Description}" Style="{StaticResource Common}"/>
+                                            <CheckBox IsChecked="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
+                                                      HorizontalAlignment="Right" 
+                                                      Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.SetActivityCommand}"/>
+                                        </DockPanel>
+                                    </ListBoxItem>
+                                    <!--#endregion-->
+                                    <!--#region Номер аналогового входа -->
                                     <ListBoxItem HorizontalContentAlignment="Stretch" DataContext="{Binding InputNum}">
                                         <uc:Parameter Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.SetAiNumCommand}"/>
                                     </ListBoxItem>
+                                    <!--#endregion-->
+                                    <!--#region К-т a -->
                                     <ListBoxItem HorizontalContentAlignment="Stretch" DataContext="{Binding A}">
                                         <uc:Parameter Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.SetACommand}"/>
                                     </ListBoxItem>
+                                    <!--#endregion-->
+                                    <!--#region К-т b -->
                                     <ListBoxItem HorizontalContentAlignment="Stretch" DataContext="{Binding B}">
                                         <uc:Parameter Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.SetBCommand}"/>
                                     </ListBoxItem>
+                                    <!--#endregion-->
+                                    <!--#region Текущее значение расхода -->
+                                    <ListBoxItem HorizontalContentAlignment="Stretch" DataContext="{Binding CurConsumtion}">
+                                        <uc:Parameter/>
+                                    </ListBoxItem>
+                                    <!--#endregion-->
                                 </ListBox>
-                                </GroupBox>
-                            </StackPanel>                        
+                            </GroupBox>
+                            <!--#endregion-->
+                        </StackPanel>                        
                     </TabItem>
                     <!--#endregion-->
                     <!--#region Релейный выход -->

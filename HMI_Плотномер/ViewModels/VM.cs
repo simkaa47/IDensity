@@ -669,6 +669,7 @@ namespace IDensity.ViewModels
                         {
                             CalibrationClass.SingleMeasCells.Data.Add(singleMeasCell);
                         });
+                        mainModel.SwitchMeas();
                        
                     };
                     singleMeasTimer.Start();
