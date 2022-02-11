@@ -32,15 +32,35 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="0.4*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <!--#region Эмблема заказчика -->
-            <Border Grid.Column="0" Margin="5">
-                <TextBlock Text="Место для эмблемы заказчика" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
+            <!--#region Логотип -->
+            <Border Margin="5" >
+                <Image Source="Resourses/Images/konvels_logo_white.png" Stretch="Uniform"/>
+            </Border>
+            <!--#endregion-->
+            <!--#region Источник -->
+            <Border Grid.Column="1" Margin="5">
+                <Grid>
+                    
+                    <ProgressBar Height="40"
+                                 Style="{StaticResource MaterialDesignLinearProgressBar}"
+                                 Minimum="{Binding SourceData.DateProlong.Ticks}"
+                                 Maximum="{Binding SourceData.FinishTime.Ticks}"
+                                 Value="{Binding CurPcDateTime.Value.Ticks, Mode=OneWay}">
+                    </ProgressBar>
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        <ComboBox IsEnabled="False"
+                                  SelectedIndex="{Binding SourceData.SourceType}"
+                                  ItemsSource="{StaticResource SourseTypes}"/>
+                    </TextBlock>
+                </Grid>
             </Border>
             <!--#endregion-->
             <!--#region Серийный номер -->
-            <Border Grid.Column="1"  Margin="5">
+            <Border Grid.Column="2"  Margin="5">
                 <UniformGrid Rows="2">
                     <TextBlock Text="Серийный номер:" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                     <TextBlock Text="000000" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
@@ -48,12 +68,12 @@
             </Border>
             <!--#endregion-->
             <!--#region Индикатор связи с платой -->
-            <Border Background="{Binding mainModel.Connecting.Value, Converter={StaticResource ColorToBool}}"  Grid.Column="2" Margin="5">
+            <Border Background="{Binding mainModel.Connecting.Value, Converter={StaticResource ColorToBool}}"  Grid.Column="3" Margin="5">
                 <TextBlock Text="Связь с платой" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
             </Border>
             <!--#endregion-->
             <!--#region Индикатор измерений -->
-            <Border Grid.Column="3" Margin="5" Background="{Binding mainModel.CycleMeasStatus.Value, Converter={StaticResource ColorToBool}}">               
+            <Border Grid.Column="4" Margin="5" Background="{Binding mainModel.CycleMeasStatus.Value, Converter={StaticResource ColorToBool}}">               
                 <TextBox Text="{Binding mainModel.CycleMeasStatus.Value, Converter={StaticResource StatusFromNum}, ConverterParameter={StaticResource measStatus}}"
                          TextWrapping="Wrap"
                          VerticalAlignment="Center"
@@ -61,7 +81,7 @@
             </Border>
             <!--#endregion-->
             <!--#region Индикатор высокого напряжения -->
-            <Border Grid.Column="4" Margin="5" Background="{Binding mainModel.TelemetryHV.HvOn.Value, Converter={StaticResource ColorToBool}}">                
+            <Border Grid.Column="5" Margin="5" Background="{Binding mainModel.TelemetryHV.HvOn.Value, Converter={StaticResource ColorToBool}}">                
                 <TextBox Text="{Binding mainModel.TelemetryHV.HvOn.Value, Converter={StaticResource StatusFromNum}, ConverterParameter={StaticResource hvStatus}}"
                          TextWrapping="Wrap"
                          VerticalAlignment="Center"
@@ -70,7 +90,7 @@
             </Border>
             <!--#endregion-->
             <!--#region Время и пользователь -->
-            <Border Grid.Column="5" Margin="5">
+            <Border Grid.Column="6" Margin="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
@@ -104,7 +124,7 @@
             </Border>
             <!--#endregion-->
             <!--#region Кнопка закрыть приложение -->
-            <Button Grid.Column="6" Margin="5" Command="{Binding CloseAppCommand}">
+            <Button Grid.Column="7" Margin="5" Command="{Binding CloseAppCommand}">
                 <Button.ToolTip>Закрыть приложение</Button.ToolTip>
                 <fa:ImageAwesome Icon="TimesCircle"/>
             </Button>
@@ -1858,6 +1878,94 @@
                             <Button Content="Включить реле" Command="{Binding SwitchRelayCommand}" CommandParameter="1"/>
                             <Button Content="Выключить реле" Command="{Binding SwitchRelayCommand}" CommandParameter="0"/>
                         </StackPanel>
+                    </TabItem>
+                    <!--#endregion-->
+                    <!--#region Общие настройки -->
+                    <TabItem Header="ОБЩИЕ НАСТРОЙКИ">
+                        <!--#region Источник -->
+                        <StackPanel>
+                            <!--#region Параметры источника -->
+                            <GroupBox Header="ПАРАМЕТРЫ ИСТОЧНИКА">
+                                <ListBox DataContext="{Binding SourceData}">
+                                    <!--#region Тип радионуклида -->
+                                    <ListBoxItem HorizontalContentAlignment="Stretch">
+                                        <DockPanel>
+                                            <TextBlock Text="Тип радионуклида" Style="{StaticResource Common}"/>
+                                            <ComboBox Width="200"
+                                              HorizontalAlignment="Right"
+                                              ItemsSource="{StaticResource SourseTypes}"
+                                              SelectedIndex="{Binding SourceType}"/>
+                                        </DockPanel>
+                                    </ListBoxItem>
+                                    <!--#endregion-->
+                                    <!--#region Дата изготовления источника -->
+                                    <ListBoxItem HorizontalContentAlignment="Stretch">
+                                        <DockPanel>
+                                            <TextBlock Text="Дата изготовления источника" Style="{StaticResource Common}" />
+                                            <wpftool:DateTimePicker Width="200"
+                                                            Format="ShortDate"
+                                                            HorizontalAlignment="Right"
+                                                            Value="{Binding CreationTime}"/>
+
+                                        </DockPanel>
+                                    </ListBoxItem>
+                                    <!--#endregion-->
+                                    <!--#region Активность источника -->
+                                    <ListBoxItem HorizontalContentAlignment="Stretch">
+                                        <DockPanel>
+                                            <TextBlock Text="Активность источника" Style="{StaticResource Common}"/>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                <TextBox Width="80" Text="{Binding Activity}"/>
+                                                <ComboBox Width="120"
+                                                  ItemsSource="{StaticResource ActMeasNums}"
+                                                  SelectedIndex="{Binding ActMeasNum}"/>
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </ListBoxItem>
+                                    <!--#endregion-->
+                                    <!--#region Дата продления службы -->
+                                    <ListBoxItem HorizontalContentAlignment="Stretch">
+                                        <DockPanel>
+                                            <TextBlock Text="Дата продления службы" Style="{StaticResource Common}"/>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                <TextBlock Text="{Binding DateProlong, StringFormat=d}" 
+                                                   Style="{StaticResource Common}" 
+                                                   VerticalAlignment="Center"/>
+                                                <Button Content="Продлить"
+                                                Margin="5,0,5,0"
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ProlongCommand}"/>
+
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </ListBoxItem>
+                                    <!--#endregion-->
+                                    <!--#region Период полураспада -->
+                                    <ListBoxItem HorizontalContentAlignment="Stretch">
+                                        <DockPanel>
+                                            <TextBlock Text="Период полураспада, лет" Style="{StaticResource Common}"/>
+                                            <TextBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding SourcePeriod}"/>
+                                        </DockPanel>
+                                    </ListBoxItem>
+                                    <!--#endregion-->
+                                </ListBox>
+                            </GroupBox>
+                            <!--#endregion-->
+                            <GroupBox Header="ПАРАМЕТРЫ ТРУБЫ">
+                                <ListBox DataContext="{Binding Pipe}">
+                                    <ListBoxItem HorizontalContentAlignment="Stretch" >
+                                        <DockPanel>
+                                            <TextBlock Style="{StaticResource Common}"
+                                                       Text="Диаметр трубы, мм"/>
+                                            <TextBox Width="200"
+                                                     HorizontalAlignment="Right"
+                                                     Text="{Binding Diameter}"/>
+                                        </DockPanel>
+                                    </ListBoxItem>
+                                </ListBox>
+                            </GroupBox>
+                        </StackPanel>
+                        
+                        <!--#endregion-->
                     </TabItem>
                     <!--#endregion-->
                     <!--#region События -->

@@ -61,6 +61,10 @@ namespace IDensity.Models.XML
             switch (type.Name.ToLower())
             {
                 case "boolean": return par.ToLower() == "true";
+                case "datetime":
+                    var date = DateTime.Today;
+                    DateTime.TryParse(par, out date);
+                    return date;
                 case "int32": return int.Parse(par);
                 case "byte": return byte.Parse(par);
                 case "single":
@@ -115,11 +119,10 @@ namespace IDensity.Models.XML
                     bool isEqual = true;
                     foreach (var prop in props)
                     {
-                        var xmlValue = nodeList.Item(i).Attributes[prop.Name].Value;
-                        var parValue = type.GetProperty(prop.Name).GetValue(param).ToString();
-                        if (prop.Name != changedProperty) isEqual = isEqual && (xmlValue == parValue);
-                    }
-                    if (isEqual) nodeList.Item(i).Attributes[changedProperty].Value = type.GetProperty(changedProperty).GetValue(param).ToString();
+                        if (prop.Name != changedProperty) continue;
+                        nodeList.Item(i).Attributes[changedProperty].Value = type.GetProperty(changedProperty).GetValue(param).ToString();
+                        break;
+                    }                   
                 }
                 xDoc.Save(Path);
             }            

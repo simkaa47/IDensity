@@ -104,15 +104,15 @@ namespace IDensity.ViewModels
                 }
             };
             #endregion
-            #region Связь с платой HV
-            Model.TelemetryHV.HvCommState.PropertyChanged += (obj, args) =>
-            {
-                if ((obj as Parameter<bool>) != null && args.PropertyName == nameof(Parameter<bool>.Value))
-                {
-                    EventHvBoardCommErr.IsActive = !(obj as Parameter<bool>).Value;
-                }
-            };
-            #endregion
+            //#region Связь с платой HV
+            //Model.TelemetryHV.HvCommState.PropertyChanged += (obj, args) =>
+            //{
+            //    if ((obj as Parameter<bool>) != null && args.PropertyName == nameof(Parameter<bool>.Value))
+            //    {
+            //        EventHvBoardCommErr.IsActive = !(obj as Parameter<bool>).Value;
+            //    }
+            //};
+            //#endregion
             #region Связь с аналоговыми модулями
             Model.AnalogGroups[0].AO.CommState.PropertyChanged += (obj, args) =>
             {

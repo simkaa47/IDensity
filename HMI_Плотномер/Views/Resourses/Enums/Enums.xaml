@@ -116,4 +116,14 @@
         <sys1:String>Группа 0</sys1:String>
         <sys1:String>Группа 1</sys1:String>
     </col1:ArrayList>
+    <col1:ArrayList x:Key="SourseTypes">
+        <sys1:String>Cs-137</sys1:String>
+        <sys1:String>Na-22</sys1:String>
+        <sys1:String>Co-60</sys1:String>
+    </col1:ArrayList>
+    <col1:ArrayList x:Key="ActMeasNums">
+        <sys1:String>Бк</sys1:String>
+        <sys1:String>Ки</sys1:String>
+        <sys1:String>мКи</sys1:String>
+    </col1:ArrayList>
 </ResourceDictionary>

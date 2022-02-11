@@ -248,8 +248,8 @@ namespace IDensity.AddClasses
             SqliteCommand command = new SqliteCommand();
             string cmd = $"INSERT INTO {TableName}(Id, MinValue, MaxValue, RegNum, RegType, Description) VALUES(@id, @minVal, @maxVal, @regNum, @regType, @desc);";            
             command.Parameters.Add(new SqliteParameter("@id", Id));
-            command.Parameters.Add(new SqliteParameter("@minVal", MinValue));
-            command.Parameters.Add(new SqliteParameter("@maxVal", MaxValue));
+            command.Parameters.Add(new SqliteParameter("@minVal", MinValue.ToString()));
+            command.Parameters.Add(new SqliteParameter("@maxVal", MaxValue.ToString()));
             command.Parameters.Add(new SqliteParameter("@regNum", RegNum));
             command.Parameters.Add(new SqliteParameter("@regType", RegType));
             command.Parameters.Add(new SqliteParameter("@desc", Description));            
@@ -318,7 +318,7 @@ namespace IDensity.AddClasses
                 }
                 return default(T);
             }
-            catch (NotSupportedException)
+            catch (Exception ex)
             {
                 return default(T);
             }

@@ -522,6 +522,11 @@ namespace IDensity.ViewModels
             }
         }, canExecPar => true));
         #endregion
+
+        #region Команда пролонгировать источник
+        RelayCommand _prolongCommand;
+        public RelayCommand ProlongCommand => _prolongCommand ?? (_prolongCommand = new RelayCommand(par => SourceData.DateProlong = DateTime.Now, o => true));
+        #endregion
         double GetPhysvalueByWeak(double weak)
         {
             double result = 0;
@@ -540,7 +545,7 @@ namespace IDensity.ViewModels
         {
             mainModel.ModelProcess();
             mainModel.UpdateDataEvent += AddDataToCollection;
-            timer.Elapsed += (s, e) => CurPcDateTime.Value = DateTime.Now;
+            timer.Elapsed += (s, e) => CurPcDateTime.Value = DateTime.Now;            
             timer.Elapsed += (s, e) => UpdateSingleMeasTime();
             timer.Start();
             Events = new Events(mainModel);
@@ -709,11 +714,6 @@ namespace IDensity.ViewModels
         public ObservableCollection<CalcCalibrationResult> CalculatedCoeffs { get; } = new ObservableCollection<CalcCalibrationResult>();
         #endregion
         #endregion
-
-
-
-
-
 
         #region Текущая дата-время компьютера
         public Parameter<DateTime> CurPcDateTime { get; private set; } = new Parameter<DateTime>("CurPcDateTime", "Текущие время и дата компьютера", DateTime.MinValue, DateTime.MaxValue, 0, "");
@@ -981,6 +981,16 @@ namespace IDensity.ViewModels
             get => _selectedDiap ?? (_selectedDiap = SelectedMeasProcess.Ranges[0]);
             set => Set(ref _selectedDiap, value);
         }
+        #endregion
+
+        #region Настройки источника
+        SourceData _sourceData;
+        public SourceData SourceData => _sourceData ?? (_sourceData = ClassInit<SourceData>());
+        #endregion
+
+        #region Настройки трубы
+        private Pipe _pipe;
+        public Pipe Pipe => _pipe ?? (_pipe = ClassInit<Pipe>());
         #endregion
 
         #region Вывести данные из БД
