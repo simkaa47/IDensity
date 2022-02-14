@@ -296,8 +296,7 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>                            
                         </Grid.RowDefinitions>
                         <!--#region Мгновенное значение ФВ -->
                         <UserControl Margin="5"                                    
@@ -336,20 +335,7 @@
                                      Grid.Column="1"
                                      Template="{StaticResource NumericDisplay}"                                     
                                      DataContext="{Binding mainModel.ContetrationValueAvg}"/>
-                        <!--#endregion-->
-                        <!--#region Массовый расход -->
-                        <UserControl Grid.Row="2"
-                                     Margin="5"
-                                     Template="{StaticResource NumericDisplay}"                                     
-                                     DataContext="{Binding mainModel.ConsMassCommon}"/>
-                        <!--#endregion-->
-                        <!--#region Массовый расход твердого -->
-                        <UserControl Grid.Row="2"
-                                     Grid.Column="1"
-                                     Margin="5"
-                                     Template="{StaticResource NumericDisplay}"                                     
-                                     DataContext="{Binding mainModel.ConsMassSolid}"/>
-                        <!--#endregion-->
+                        <!--#endregion-->                        
                     </Grid>
                     <!--#endregion-->                    
 
@@ -498,32 +484,7 @@
                                         </i:Interaction.Triggers>
                                     </ComboBox>                                    
                                 </DockPanel>
-                            </ListBoxItem>
-                            <!--#region Время усреднения -->
-                            <ListBoxItem HorizontalContentAlignment="Stretch">
-                                <DockPanel>
-                                    <TextBlock Style="{StaticResource Common}" Text="Время усреднения, сек"/>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <TextBox Text="{Binding AvgTimeWrite}" Width="50" ></TextBox>
-                                        <Button Width="50" Margin="5,0,5,0" HorizontalAlignment="Right"
-                                                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.ChangeUserAvgTime}"
-                                                            CommandParameter="{Binding AvgTimeWrite}">--></Button>
-                                        <Border Width="50" HorizontalAlignment="Right">
-                                            <TextBlock Margin="1,0,1,0" 
-                                                       IsEnabled="False" 
-                                                       HorizontalAlignment="Left">
-                                                <TextBlock.Text>
-                                                    <MultiBinding Converter="{StaticResource MultiplyNumsConverter}">
-                                                        <Binding Path="mainModel.CurMeasProcess.MeasDeep.Value"/>
-                                                        <Binding Path="mainModel.CurMeasProcess.MeasDuration.Value" />
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                        </Border>
-                                    </StackPanel>
-                                </DockPanel>
-                            </ListBoxItem>
-                            <!--#endregion-->
+                            </ListBoxItem>                            
                         </ListBox>
                     </TabItem>
                     <TabItem Header="ДАТА И ВРЕМЯ">
@@ -1881,8 +1842,7 @@
                     </TabItem>
                     <!--#endregion-->
                     <!--#region Общие настройки -->
-                    <TabItem Header="ОБЩИЕ НАСТРОЙКИ">
-                        <!--#region Источник -->
+                    <TabItem Header="ОБЩИЕ НАСТРОЙКИ">                        
                         <StackPanel>
                             <!--#region Параметры источника -->
                             <GroupBox Header="ПАРАМЕТРЫ ИСТОЧНИКА">
@@ -1949,23 +1909,8 @@
                                     <!--#endregion-->
                                 </ListBox>
                             </GroupBox>
-                            <!--#endregion-->
-                            <GroupBox Header="ПАРАМЕТРЫ ТРУБЫ">
-                                <ListBox DataContext="{Binding Pipe}">
-                                    <ListBoxItem HorizontalContentAlignment="Stretch" >
-                                        <DockPanel>
-                                            <TextBlock Style="{StaticResource Common}"
-                                                       Text="Диаметр трубы, мм"/>
-                                            <TextBox Width="200"
-                                                     HorizontalAlignment="Right"
-                                                     Text="{Binding Diameter}"/>
-                                        </DockPanel>
-                                    </ListBoxItem>
-                                </ListBox>
-                            </GroupBox>
-                        </StackPanel>
-                        
-                        <!--#endregion-->
+                            <!--#endregion-->                            
+                        </StackPanel> 
                     </TabItem>
                     <!--#endregion-->
                     <!--#region События -->

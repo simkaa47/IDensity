@@ -815,6 +815,10 @@ namespace IDensity.ViewModels
 
         #endregion
 
+        #region Измеряемые величины
+        public List<Parameter<float>> MeasuredValues { get; }
+        #endregion
+
         #region Данные перечислений
         #region Названия измерительных процессов
         public DataBaseCollection<EnumCustom> MeasProcessNames { get; } = new DataBaseCollection<EnumCustom>("MeasProcessNames", new EnumCustom());
