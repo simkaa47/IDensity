@@ -502,13 +502,13 @@ namespace IDensity.ViewModels
 
         #region Команда посчитать график для проверки полинома
         RelayCommand _showPolinomTrend;
-        public RelayCommand ShowPolinomTrendCommand => _showPolinomTrend ?? (_showPolinomTrend = new RelayCommand(par => 
+        public RelayCommand ShowPolinomTrendCommand => _showPolinomTrend ?? (_showPolinomTrend = new RelayCommand(par =>
         {
             if (CalibrationClass.SingleMeasCells.Data.Count >= 2 && CalculatedCoeffs.Count != 0)
             {
                 var measList = CalibrationClass.SingleMeasCells.Data.OrderBy(sm => sm.Weak).Select(sm => new Point(sm.Weak, sm.PhysVal)).ToList();
                 var startWeak = measList[0].X;
-                var finishWeak = measList[measList.Count-1].X;
+                var finishWeak = measList[measList.Count - 1].X;
                 if (startWeak != finishWeak)
                 {
                     int cnt = 50;
@@ -518,7 +518,7 @@ namespace IDensity.ViewModels
                     MeasuredPointsCollection = measList;
                     CalculatedMeasCollection = calcList;
                 }
-                
+
             }
         }, canExecPar => true));
         #endregion
@@ -545,7 +545,7 @@ namespace IDensity.ViewModels
         {
             mainModel.ModelProcess();
             mainModel.UpdateDataEvent += AddDataToCollection;
-            timer.Elapsed += (s, e) => CurPcDateTime.Value = DateTime.Now;            
+            timer.Elapsed += (s, e) => CurPcDateTime.Value = DateTime.Now;
             timer.Elapsed += (s, e) => UpdateSingleMeasTime();
             timer.Start();
             Events = new Events(mainModel);
@@ -569,7 +569,7 @@ namespace IDensity.ViewModels
         public Calibration CalibrationClass { get; } = new Calibration();
         #endregion
 
-        
+
         #endregion
 
         #region Единичное измерение
@@ -636,7 +636,7 @@ namespace IDensity.ViewModels
             get { return _singleMeasWeakResult; }
             set { Set(ref _singleMeasWeakResult, value); }
         }
-               
+
 
         #endregion
 
@@ -675,7 +675,7 @@ namespace IDensity.ViewModels
                             CalibrationClass.SingleMeasCells.Data.Add(singleMeasCell);
                         });
                         mainModel.SwitchMeas();
-                       
+
                     };
                     singleMeasTimer.Start();
                 }
@@ -696,7 +696,7 @@ namespace IDensity.ViewModels
         {
             get { return _measuredPointsCollection; }
             set { Set(ref _measuredPointsCollection, value); }
-        } 
+        }
         #endregion
 
         #region Отображение графика из посчитанного полинома
@@ -813,7 +813,7 @@ namespace IDensity.ViewModels
         public bool ArchivalTrendUploading { get => _archivalTrendUploading; private set { Set(ref _archivalTrendUploading, value); } }
         #endregion
 
-        #endregion
+        #endregion        
 
         #region Данные перечислений
         #region Названия измерительных процессов

@@ -126,4 +126,9 @@
         <sys1:String>Ки</sys1:String>
         <sys1:String>мКи</sys1:String>
     </col1:ArrayList>
+    <col1:ArrayList x:Key="MeasIndicators">
+        <sys1:String>Плотность</sys1:String>
+        <sys1:String>Концентрация</sys1:String>
+        <sys1:String>Расход</sys1:String>
+    </col1:ArrayList>
 </ResourceDictionary>

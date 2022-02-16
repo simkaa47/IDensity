@@ -159,26 +159,7 @@
                         <!--#region Текущй тренд -->
                         <TabItem Header="Текущий тренд">
                             <!--#region Текущий тренд -->
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="0.1*"></RowDefinition>
-                                    <RowDefinition></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <DockPanel Grid.Column="0" >
-                                    <CheckBox x:Name="VisibleLine1" IsChecked="True"  VerticalAlignment="Center"></CheckBox>
-                                    <Label Content="Усредненная физическая величина"  VerticalAlignment="Center"></Label>
-                                </DockPanel>
-                                <DockPanel Grid.Column="1">
-                                    <CheckBox x:Name="VisibleLine2" VerticalAlignment="Center"></CheckBox>
-                                    <Label Content="Мгновенная физическая величина"  VerticalAlignment="Center"></Label>
-                                </DockPanel>
-                                <oxy:Plot Grid.Row="2" Grid.ColumnSpan="4" Tag="{Binding PlotCollection}" Template="{StaticResource Trend}"></oxy:Plot>
-                            </Grid>
+                            <oxy:Plot  Tag="{Binding PlotCollection}" Template="{StaticResource Trend}"/>
                             <!--#endregion-->
                         </TabItem>
                         <!--#endregion-->
@@ -286,97 +267,106 @@
                     <!--#endregion-->
 
                     <!--#region Числовая индикация ФВ -->
-                    <Grid Grid.Column="1">
-                        <Grid.Resources>
-                            <Style TargetType="TextBlock" BasedOn="{StaticResource Common}"/>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <!--#region Мгновенное значение ФВ -->
-                        <UserControl Margin="5"                                    
-                                     Template="{StaticResource NumericDisplay}"                                     
-                                     DataContext="{Binding mainModel.PhysValueCur}">
-                            <UserControl.Tag>
-                                <MultiBinding Converter="{StaticResource StringByIndex}">
-                                    <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.CurMeasNum" Mode="OneWay"/>
-                                    <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.MeasUnits" Mode="OneWay"/>
-                                </MultiBinding>
-                            </UserControl.Tag>
-                        </UserControl>
+                    <UniformGrid    Grid.Column="1" 
+                                    Grid.Row="0"
+                                    Rows="2"
+                                    Grid.RowSpan="2">
+                        <!--#region Верхний селектор -->
+                        <Border Margin="5" Style="{StaticResource BorderLight}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="0.15*"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <ComboBox Name="HighSelector" 
+                                          Margin="10,0,0,0"
+                                      ItemsSource="{StaticResource MeasIndicators}"
+                                      FontSize="24"
+                                      VerticalContentAlignment="Center"
+                                      SelectedIndex="0"/>
+                                <uc:MeasResults SelIndex="{Binding ElementName=HighSelector, Path=SelectedIndex}"
+                                            Grid.Row="1">
+                                </uc:MeasResults>
+                            </Grid>
+                        </Border>                        
                         <!--#endregion-->
-                        <!--#region Усредненное значение ФВ -->
-                        <UserControl Margin="5"
-                                     Grid.Column="1"
-                                     Template="{StaticResource NumericDisplay}"                                     
-                                     DataContext="{Binding mainModel.PhysValueAvg}">
-                            <UserControl.Tag>
-                                <MultiBinding Converter="{StaticResource StringByIndex}">
-                                    <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.CurMeasNum" Mode="OneWay"/>
-                                    <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.MeasUnits" Mode="OneWay"/>
-                                </MultiBinding>
-                            </UserControl.Tag>
-                        </UserControl>
+                        <!--#region Нижний селектор -->
+                        <Border Margin="5" Style="{StaticResource BorderLight}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="0.15*"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <ComboBox Name="LowSelector" 
+                                          Margin="10,0,0,0"
+                                      ItemsSource="{StaticResource MeasIndicators}"
+                                      FontSize="24"
+                                      VerticalContentAlignment="Center"
+                                      SelectedIndex="0"/>
+                                <uc:MeasResults SelIndex="{Binding ElementName=LowSelector, Path=SelectedIndex}"
+                                            Grid.Row="1">
+                                </uc:MeasResults>
+                            </Grid>
+                        </Border>
                         <!--#endregion-->
-                        <!--#region Мгновенное значение концетрации -->
-                        <UserControl Grid.Row="1"
-                                     Margin="5"
-                                     Template="{StaticResource NumericDisplay}"                                     
-                                     DataContext="{Binding mainModel.ContetrationValueCur}"/>
-                        <!--#endregion-->
-                        <!--#region Усредненное значение концетрации -->
-                        <UserControl Grid.Row="1"
-                                     Margin="5"
-                                     Grid.Column="1"
-                                     Template="{StaticResource NumericDisplay}"                                     
-                                     DataContext="{Binding mainModel.ContetrationValueAvg}"/>
-                        <!--#endregion-->
-                        <!--#region Массовый расход -->
-                        <UserControl Grid.Row="2"
-                                     Margin="5"
-                                     Template="{StaticResource NumericDisplay}"                                     
-                                     DataContext="{Binding mainModel.ConsMassCommon}"/>
-                        <!--#endregion-->
-                        <!--#region Массовый расход твердого -->
-                        <UserControl Grid.Row="2"
-                                     Grid.Column="1"
-                                     Margin="5"
-                                     Template="{StaticResource NumericDisplay}"                                     
-                                     DataContext="{Binding mainModel.ConsMassSolid}"/>
-                        <!--#endregion-->
-                    </Grid>
-                    <!--#endregion-->                    
 
-                    <!--#region Кнопки управления -->
+                    </UniformGrid>
+                    <!--#endregion--> 
+
+                    <!--#region панель управления -->
                     <Grid Grid.Row="1" Grid.Column="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>                        
-                        <!--#region Кнопка Вкл-выкл измерения -->
-                        <Button Grid.Column="0" 
-                                Grid.ColumnSpan="2" 
-                                Margin="5" 
+                        <StackPanel>
+                            <ListBox Background="Gray" Margin="5">
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Усредненное значение плотности"
+                                                   Style="{StaticResource Common}"/>
+                                        <CheckBox  x:Name="VisibleLine1" IsChecked="True" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Мгновенное значение плотности"
+                                                   Style="{StaticResource Common}"/>
+                                        <CheckBox  x:Name="VisibleLine2" IsChecked="True" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                            </ListBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <!--#region Кнопка Вкл-выкл измерения -->
+                            <Button Margin="5" Height="40" 
                                 Command="{Binding SwitchMeasCommand}" 
                                 Background="{Binding mainModel.CycleMeasStatus.Value, Converter={StaticResource ColorToBool}, ConverterParameter=#FF6A5AcD}">
 
-                            <TextBlock  Text="{Binding mainModel.CycleMeasStatus.Value, Converter={StaticResource StatusFromNum}, ConverterParameter={StaticResource measStatusBtn}}"
+                                <TextBlock  Text="{Binding mainModel.CycleMeasStatus.Value, Converter={StaticResource StatusFromNum}, ConverterParameter={StaticResource measStatusBtn}}"
                                        IsEnabled="{Binding mainModel.Connecting}"
                                        TextWrapping="Wrap"/>
-                        </Button>
-                        <!--#endregion-->
+                            </Button>
+                            <!--#endregion-->
+                            <ListBox Background="Gray" Margin="5">
+                                <ListBoxItem>
+                                    <DockPanel>
+                                        <Border Background="Black"
+                                                Height="40"
+                                                Width="100">
+                                            <TextBlock Style="{StaticResource Common}"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                Text="{Binding mainModel.TelemetryHV.VoltageCurOut.Value, StringFormat=f1}"/>
+                                        </Border>
+                                        <TextBlock Text="Напряжение ФЭУ, вольт" Style="{StaticResource Common}"
+                                                   VerticalAlignment="Center"
+                                                   Margin="5"/>
+                                    </DockPanel>
+                                </ListBoxItem>
+                            </ListBox>
+                        </StackPanel>
+                        
                     </Grid>
                     <!--#endregion-->                    
 

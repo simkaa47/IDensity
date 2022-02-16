@@ -2,26 +2,24 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ControlTemplate x:Key="NumericDisplay">
         <Border Style="{StaticResource BorderLight}">
-            <Grid>
+            <Grid VerticalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="0.3*"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Viewbox Grid.Row="0">
-                    <TextBlock Text="{Binding Description}"                           
-                           Style="{StaticResource Common}"
-                           TextWrapping="Wrap"
-                           Margin="5"/>
-                </Viewbox>                
-                <TextBlock HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Style="{StaticResource Common}"
-                           Grid.Row="1"
-                           FontSize="40">
-                    <Run Text="{Binding Value, StringFormat={}{0:F1}}"/>
-                    <Run Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
-                         FontSize="20"/>
-                </TextBlock>
+                <Viewbox Stretch="Uniform">
+                    <StackPanel Orientation="Horizontal"                                
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{Binding NumValue.Value, StringFormat={}{0:F1}}"
+                                   Style="{StaticResource Common}"/>
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
+                                   Margin="5,0,0,0"
+                                   Visibility="{Binding MeasUnit, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                   Style="{StaticResource Common}"/>
+                    </StackPanel>
+                </Viewbox>               
+                
             </Grid>
         </Border>
     </ControlTemplate>
