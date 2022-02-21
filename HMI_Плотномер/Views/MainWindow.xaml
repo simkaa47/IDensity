@@ -1348,7 +1348,11 @@
                                 <uc:Parameter/>
                             </ListBoxItem>
                             <!--#endregion-->
-
+                            <!--#region Температура -->
+                            <ListBoxItem DataContext="{Binding mainModel.TempTelemetry.TempExternal}" >
+                                <uc:Parameter/>
+                            </ListBoxItem>
+                            <!--#endregion-->
                             <!--#region Индикатор связи -->
                             <ListBoxItem DataContext="{Binding mainModel.TempTelemetry.TempBoardCommState}">
                                 <UserControl Template="{StaticResource BitIndicator}"/>
