@@ -13,7 +13,7 @@ namespace IDensity.Models
         public DataBaseCollection<SingleMeasCell> SingleMeasCells { get; } = new DataBaseCollection<SingleMeasCell>("SingleMeasures", null);
         #endregion
         #region Степень полинома
-        private int polDegree = 2;
+        private int polDegree = 1;
 
         public int PolDegree
         {
@@ -21,7 +21,7 @@ namespace IDensity.Models
             set 
             {
                 var temp = polDegree;
-                if (value >= 2 && value <= 5)
+                if (value >= 1 && value <= 5)
                 {
                     temp = value;
                 }

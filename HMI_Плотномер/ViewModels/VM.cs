@@ -816,8 +816,11 @@ namespace IDensity.ViewModels
         #endregion        
 
         #region Данные перечислений
+
+
         #region Названия измерительных процессов
         public DataBaseCollection<EnumCustom> MeasProcessNames { get; } = new DataBaseCollection<EnumCustom>("MeasProcessNames", new EnumCustom());
+        public string[] MeasProcessNamesArr => MeasProcessNames.Data.Select(ec => ec.Name).ToArray();
         #endregion;        
 
         #region Названия единиц измерения

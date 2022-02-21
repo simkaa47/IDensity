@@ -17,7 +17,7 @@ namespace IDensity.Models.XML
         #endregion
 
         #region Путь
-        public static string Path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings.xml");
+        public static string Path = "settings.xml";
         #endregion
 
         #region Метод чтения данных по дескриптору
