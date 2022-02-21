@@ -77,9 +77,7 @@ namespace IDensity.Models
             client = new TcpClient();
             client.ReceiveTimeout = 2000;
             TcpEvent?.Invoke(($"Выполняется подключение к {IP}:{PortNum}"));
-            client.Connect(IP, PortNum);
-
-            model.Connecting.Value = client.Connected;
+            client.Connect(IP, PortNum);           
             TcpEvent?.Invoke(($"Произведено подключение к {IP}:{PortNum}"));
             stream = client.GetStream();
 
@@ -128,12 +126,14 @@ namespace IDensity.Models
                     Thread.Sleep(50);
                 }
                 errCommCount = 0;
+                model.Connecting.Value = client.Connected;
 
             }
             catch (Exception ex)
             {
-                if (++errCommCount == 5)
+                if (++errCommCount >= 5)
                 {
+                    errCommCount = 0;
                     TcpEvent?.Invoke(ex.Message);
                     commands?.Clear();
                     Disconnect();
@@ -149,7 +149,7 @@ namespace IDensity.Models
         {
             var numGroup = indexAm / 2;
             var numModule = indexAm % 2;
-            var bytes = AskResponseBytes(Encoding.ASCII.GetBytes($"CMND,AMT,{numGroup},{numModule}"));
+            var bytes = AskResponseBytes(Encoding.ASCII.GetBytes($"CMND,AMT,{numGroup},{numModule}#"));
             if (bytes != 11) return;
             if (numModule == 0)// Если телеметрия аналогового выхода
             {
@@ -205,9 +205,9 @@ namespace IDensity.Models
                 num = stream.Read(inBuf, offset, inBuf.Length);
                 Thread.Sleep(100);
                 offset += num;
-
+                
             } while (stream.DataAvailable);
-            model.Connecting.Value = true;
+            
            
             return Encoding.ASCII.GetString(inBuf, 0, num);// Получаем строку из байт;            
         }
@@ -224,8 +224,7 @@ namespace IDensity.Models
                 num = stream.Read(inBuf, 0, inBuf.Length);
 
             } while (stream.DataAvailable);
-            Thread.Sleep(100);
-            model.Connecting.Value = true;
+            Thread.Sleep(100);            
             return num;
         }
         #endregion
