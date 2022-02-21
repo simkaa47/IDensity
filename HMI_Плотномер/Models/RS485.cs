@@ -243,20 +243,19 @@ namespace IDensity.Models
         {
             model.CycleMeasStatus.Value = SelectRegs(model.CycleMeasStatus.RegType)[model.CycleMeasStatus.RegNum] == 0 ? false : true;
             if (model.CycleMeasStatus.Value)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    model.CountersCur[i].Value = GetFloatFromUshorts(SelectRegs(model.CountersCur[i].RegType), model.CountersCur[i].RegNum);
-
-                }
+            {                
                 model.PhysValueCur.Value = GetFloatFromUshorts(SelectRegs(model.PhysValueCur.RegType), model.PhysValueCur.RegNum);
                 model.PhysValueAvg.Value = GetFloatFromUshorts(SelectRegs(model.PhysValueAvg.RegType), model.PhysValueAvg.RegNum);
                 model.ContetrationValueCur.Value = GetFloatFromUshorts(SelectRegs(model.ContetrationValueCur.RegType), model.ContetrationValueCur.RegNum);
                 model.ContetrationValueAvg.Value = GetFloatFromUshorts(SelectRegs(model.ContetrationValueAvg.RegType), model.ContetrationValueAvg.RegNum);
                 model.ConsMassCommon.Value = GetFloatFromUshorts(SelectRegs(model.ConsMassCommon.RegType), model.ConsMassCommon.RegNum);
                 model.ConsMassSolid.Value = GetFloatFromUshorts(SelectRegs(model.ConsMassSolid.RegType), model.ConsMassSolid.RegNum);
-            }            
-            
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                model.CountersCur[i].Value = GetFloatFromUshorts(SelectRegs(model.CountersCur[i].RegType), model.CountersCur[i].RegNum);
+
+            }
         }
         
         ushort[] SelectRegs(string reg)

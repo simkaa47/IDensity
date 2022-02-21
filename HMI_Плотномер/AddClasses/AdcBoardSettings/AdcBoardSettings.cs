@@ -37,6 +37,7 @@ namespace IDensity.AddClasses.AdcBoardSettings
         public RelayCommand SetAdcModeChangeCommand => _setAdcModeChange ?? (_setAdcModeChange = new RelayCommand(p => {
             var settings = this.Clone() as AdcBoardSettings;
             settings.AdcMode.Value = this.AdcMode.WriteValue;
+            AdcModeChangedEvent?.Invoke(this.AdcMode.WriteValue);
             SettingsChangedEvent?.Invoke(settings);
         }, p => true));
         #endregion
@@ -45,6 +46,7 @@ namespace IDensity.AddClasses.AdcBoardSettings
         RelayCommand _setAdcSyncModeChangeCommand;
         public RelayCommand SetAdcSyncModeChangeCommand => _setAdcSyncModeChangeCommand ?? (_setAdcSyncModeChangeCommand = new RelayCommand(p => {
             var settings = this.Clone() as AdcBoardSettings;
+            AdcSyncModeChangedEvent?.Invoke(this.AdcSyncMode.WriteValue);
             settings.AdcSyncMode.Value = this.AdcSyncMode.WriteValue;
             SettingsChangedEvent?.Invoke(settings);
         }, p => true));
@@ -54,6 +56,7 @@ namespace IDensity.AddClasses.AdcBoardSettings
         RelayCommand _setAdcSyncLevelChangeCommand;
         public RelayCommand SetAdcSyncLevelChangeCommand => _setAdcSyncLevelChangeCommand ?? (_setAdcSyncLevelChangeCommand = new RelayCommand(p => {
             var settings = this.Clone() as AdcBoardSettings;
+            AdcSyncLevelChangedEvent?.Invoke(this.AdcSyncLevel.WriteValue);
             settings.AdcSyncLevel.Value = this.AdcSyncLevel.WriteValue;
             SettingsChangedEvent?.Invoke(settings);
         }, p => true));
@@ -63,6 +66,7 @@ namespace IDensity.AddClasses.AdcBoardSettings
         RelayCommand _setAdcProcModeChangeCommand;
         public RelayCommand SetAdcProcModeChangeCommand => _setAdcProcModeChangeCommand ?? (_setAdcProcModeChangeCommand = new RelayCommand(p => {
             var settings = this.Clone() as AdcBoardSettings;
+            AdcProcModeChangedEvent?.Invoke(this.AdcProcMode.WriteValue);
             settings.AdcProcMode.Value = this.AdcProcMode.WriteValue;
             SettingsChangedEvent?.Invoke(settings);
         }, p => true));
@@ -72,6 +76,7 @@ namespace IDensity.AddClasses.AdcBoardSettings
         RelayCommand _setTimerMaxChangeCommand;
         public RelayCommand SetTimerMaxChangeCommand => _setTimerMaxChangeCommand ?? (_setTimerMaxChangeCommand = new RelayCommand(p => {
             var settings = this.Clone() as AdcBoardSettings;
+            TimerMaxChangedEvent?.Invoke(this.TimerMax.WriteValue);
             settings.TimerMax.Value = this.TimerMax.WriteValue;
             SettingsChangedEvent?.Invoke(settings);
         }, p => true));
@@ -81,6 +86,7 @@ namespace IDensity.AddClasses.AdcBoardSettings
         RelayCommand _setPreampGainChangeCommand;
         public RelayCommand SetPreampGainChangeCommand => _setPreampGainChangeCommand ?? (_setPreampGainChangeCommand = new RelayCommand(p => {
             var settings = this.Clone() as AdcBoardSettings;
+            PreampGainChangedEvent(this.PreampGain.WriteValue);
             settings.PreampGain.Value = this.PreampGain.WriteValue;
             SettingsChangedEvent?.Invoke(settings);
         }, p => true));
@@ -94,8 +100,12 @@ namespace IDensity.AddClasses.AdcBoardSettings
         #region Событие изменения настроек АЦП
         public event Action<AdcBoardSettings> SettingsChangedEvent;
         #endregion
-        
-
+        public event Action<ushort> AdcModeChangedEvent;
+        public event Action<ushort> AdcSyncModeChangedEvent;
+        public event Action<ushort> AdcSyncLevelChangedEvent;
+        public event Action<ushort> AdcProcModeChangedEvent;
+        public event Action<ushort> TimerMaxChangedEvent;
+        public event Action<ushort> PreampGainChangedEvent;
         public object Clone()
         {
             return new AdcBoardSettings()

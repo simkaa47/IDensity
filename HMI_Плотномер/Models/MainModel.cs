@@ -6,6 +6,7 @@ using IDensity.Models.XML;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -45,7 +46,7 @@ namespace IDensity.Models
             MeasUnitSettingsDescribe();
             ConsInputSettings.SetConsInputEvent += SetConsInputSettings;
         }
-
+        Stopwatch timer = new Stopwatch();
 
         #region События
         #region Обновились данные
@@ -283,7 +284,13 @@ namespace IDensity.Models
         /// </summary>
         void AdcSettingsEventDescribe()
         {
-            AdcBoardSettings.SettingsChangedEvent += SetAdcBoardSettings;            
+            AdcBoardSettings.SettingsChangedEvent += SetAdcBoardSettings;
+            AdcBoardSettings.AdcModeChangedEvent += SetAdcMode;
+            AdcBoardSettings.AdcProcModeChangedEvent += SetAdcProcMode;
+            AdcBoardSettings.AdcSyncLevelChangedEvent += SetAdcSyncLevel;
+            AdcBoardSettings.AdcSyncModeChangedEvent += SetAdcSyncMode;
+            AdcBoardSettings.PreampGainChangedEvent += SetPreampGain;
+            AdcBoardSettings.TimerMaxChangedEvent += SetAdcTimerMax;
         }
         #endregion
         #endregion
@@ -312,13 +319,18 @@ namespace IDensity.Models
 
         void MainProcess()
         {
+            timer.Start();
             while (true)
-            {
+            {               
                 if (CommMode.RsEnable) rs?.GetData(this);
                 else if (CommMode.EthEnable) Tcp?.GetData(this);
                 else Connecting.Value = false;
-                if (CycleMeasStatus.Value && Connecting.Value)
-                    UpdateDataEvent?.Invoke();                
+                if (Connecting.Value && timer.ElapsedMilliseconds > 1000)
+                {
+                    UpdateDataEvent?.Invoke();
+                    timer.Restart();
+                }
+                                  
                 Thread.Sleep(100);
             }
         }
@@ -553,9 +565,32 @@ namespace IDensity.Models
 
         #region Команды изменения настроек платы АЦП
         public void SetAdcBoardSettings(AdcBoardSettings settings)
+        {            
+            if(CommMode.RsEnable) rs.SetAdcBoardSettings(settings);
+        }
+        public void SetAdcMode(ushort value)
         {
-            if (CommMode.EthEnable) Tcp.SetAdcBoardSettings(settings);
-            else if (CommMode.RsEnable) rs.SetAdcBoardSettings(settings);
+            if(CommMode.EthEnable) Tcp.SetAdcMode(value);
+        }
+        public void SetAdcProcMode(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetAdcProcMode(value);
+        }
+        public void SetAdcSyncMode(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetAdcSyncMode(value);
+        }
+        public void SetAdcSyncLevel(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetAdcSyncLevel(value);
+        }
+        public void SetAdcTimerMax(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetAdcTimerMax(value);
+        }
+        public void SetPreampGain(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetPreampGain(value);
         }
         #endregion
 

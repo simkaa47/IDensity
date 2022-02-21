@@ -20,7 +20,7 @@ namespace IDensity.Models.SQL
         #endregion
 
         #region Строка подлючения
-        static string ConnectionString { get => $"Data Source={DBName}.db;Mode=ReadWriteCreate"; }
+        static string ConnectionString { get => $"Data Source={DBName}.db;Mode=ReadWriteCreate;"; }
 
         #endregion
 
@@ -103,12 +103,11 @@ namespace IDensity.Models.SQL
             {                
                     connection.Open();
                     command.Connection = connection;
-                    command.ExecuteNonQuery();              
-               
+                    command.ExecuteNonQuery();
+                //INSERT INTO TimePoints (time, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10) VALUES ('18.02.2002 18:15:14', -Inf, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             }
         }
         #endregion
-
         #region Добвление в таблицу
         static void InsertToTable<T>(T cell)
         {
@@ -123,7 +122,18 @@ namespace IDensity.Models.SQL
             {
                 cmd = cmd + item.Name + ", ";
                 paramName = $"@{item.Name}";
-                command.Parameters.Add(new SqliteParameter(paramName, myType.GetProperty(item.Name).GetValue(cell)));
+                object value = myType.GetProperty(item.Name).GetValue(cell);
+                if (item.PropertyType.Name.ToLower() == "single")
+                {
+                    if (value is float)
+                    {
+                        float valFloat = (float)value;
+                        if (float.IsNaN(valFloat)) value = 0;
+                        if (float.IsPositiveInfinity(valFloat)) value = float.MaxValue;
+                        if (float.IsNegativeInfinity(valFloat)) value = float.MinValue;
+                    }
+                }
+                command.Parameters.Add(new SqliteParameter(paramName, value));
                 values += paramName;
                 values += ", ";
             }

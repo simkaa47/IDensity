@@ -319,24 +319,90 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <StackPanel>
+                        <ScrollViewer>
                             <ListBox Background="Gray" Margin="5">
                                 <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
                                     <DockPanel>
-                                        <TextBlock Text="Усредненное значение плотности"
+                                        <TextBlock Text="Счетчик 0"
                                                    Style="{StaticResource Common}"/>
-                                        <CheckBox  x:Name="VisibleLine1" IsChecked="True" HorizontalAlignment="Right" />
+                                        <Rectangle Fill="Red" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine1" IsChecked="{Binding TrendsVisible.VisLine1}" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Счетчик 1"
+                                                   Style="{StaticResource Common}"/>
+                                        <Rectangle Fill="Blue" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine2" IsChecked="{Binding TrendsVisible.VisLine2}" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Счетчик 2"
+                                                   Style="{StaticResource Common}"/>
+                                        <Rectangle Fill="Green" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine3" IsChecked="{Binding TrendsVisible.VisLine3}" HorizontalAlignment="Right" />
                                     </DockPanel>
                                 </ListBoxItem>
                                 <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
                                     <DockPanel>
                                         <TextBlock Text="Мгновенное значение плотности"
                                                    Style="{StaticResource Common}"/>
-                                        <CheckBox  x:Name="VisibleLine2" IsChecked="True" HorizontalAlignment="Right" />
+                                        <Rectangle Fill="Brown" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine4" IsChecked="{Binding TrendsVisible.VisLine4}" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Усредненное значение плотности"
+                                                   Style="{StaticResource Common}"/>
+                                        <Rectangle Fill="Black" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine5" IsChecked="{Binding TrendsVisible.VisLine5}" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Мгновенное значение концентрации"
+                                                   Style="{StaticResource Common}"/>
+                                        <Rectangle Fill="Yellow" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine6" IsChecked="{Binding TrendsVisible.VisLine6}" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Усредненное значение концентрации"
+                                                   Style="{StaticResource Common}"/>
+                                        <Rectangle Fill="Pink" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine7" IsChecked="{Binding TrendsVisible.VisLine7}" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Общий расход"
+                                                   Style="{StaticResource Common}"/>
+                                        <Rectangle Fill="Orange" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine8" IsChecked="{Binding TrendsVisible.VisLine8}" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Расход твердого"
+                                                   Style="{StaticResource Common}"/>
+                                        <Rectangle Fill="Purple" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine9" IsChecked="{Binding TrendsVisible.VisLine9}" HorizontalAlignment="Right" />
+                                    </DockPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Height="40" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock Text="Напряжение HV"
+                                                   Style="{StaticResource Common}"/>
+                                        <Rectangle Fill="Aqua" Width="16" Margin="10,0,0,10" Height="16"/>
+                                        <CheckBox  x:Name="VisibleLine10" IsChecked="{Binding TrendsVisible.VisLine10}" HorizontalAlignment="Right" />
                                     </DockPanel>
                                 </ListBoxItem>
                             </ListBox>
-                        </StackPanel>
+                        </ScrollViewer>
                         <StackPanel Grid.Column="1">
                             <!--#region Кнопка Вкл-выкл измерения -->
                             <Button Margin="5" Height="40" 
@@ -347,6 +413,22 @@
                                        IsEnabled="{Binding mainModel.Connecting}"
                                        TextWrapping="Wrap"/>
                             </Button>
+                            <Button Margin="5"
+                                    Command="{Binding AskMeasCommand}"
+                                    Visibility="{Binding mainModel.Tcp.CyclicAsk, Converter={StaticResource InverseBoolToVisConverter}}">
+                                <TextBlock Text="ОПРОС ДАННЫХ ИЗМЕРЕНИЙ"/>
+                            </Button>
+                            <Button Margin="5"
+                                    Command="{Binding AskTelCommand}"
+                                    Visibility="{Binding mainModel.Tcp.CyclicAsk, Converter={StaticResource InverseBoolToVisConverter}}">
+                                <TextBlock Text="ОПРОС ТЕЛЕМЕТРИИ"/>
+                            </Button>
+                            <Button Margin="5"
+                                    Command="{Binding AskSetCommand}"
+                                    Visibility="{Binding mainModel.Tcp.CyclicAsk, Converter={StaticResource InverseBoolToVisConverter}}">
+                                <TextBlock Text="ПРОЧИТАТЬ ВСЕ НАСТРОЙКИ"/>
+                            </Button>
+                            
                             <!--#endregion-->
                             <ListBox Background="Gray" Margin="5">
                                 <ListBoxItem>
@@ -439,6 +521,14 @@
                                     <ListBox HorizontalContentAlignment="Stretch">
                                         <ListBoxItem Content="{Binding mainModel.Tcp.IP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"  HorizontalAlignment="Stretch" Template="{StaticResource TextBoxParameter}"  Tag="IP адрес устройства"></ListBoxItem>
                                         <ListBoxItem Content="{Binding mainModel.Tcp.PortNum, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Stretch" Template="{StaticResource TextBoxParameter}"  Tag="Номер порта"></ListBoxItem>
+                                        <ListBoxItem Content="{Binding mainModel.Tcp.AskDelay, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Stretch" Template="{StaticResource TextBoxParameter}"  Tag="Задержка между пакетами, мс"/>
+                                        <ListBoxItem>
+                                            <DockPanel>
+                                                <TextBlock Text="Циклический опрос данных телеметрии и измерений" Style="{StaticResource Common}"/>
+                                                <CheckBox IsChecked="{Binding mainModel.Tcp.CyclicAsk, UpdateSourceTrigger=PropertyChanged}"
+                                                          HorizontalAlignment="Right"/>
+                                            </DockPanel>
+                                        </ListBoxItem>
                                     </ListBox>
                                 </GroupBox>
                                 <!--#endregion-->
@@ -557,7 +647,7 @@
             </TabItem>
             <!--#endregion-->
             <!--#region Расширенные настройки -->
-            <TabItem Header="РАСШИРЕННЫЕ НАСТРОЙКИ">
+            <TabItem Header="РАСШИРЕННЫЕ НАСТРОЙКИ" Visibility="{Binding CurUser, Converter={StaticResource UserToVisibility}, ConverterParameter=Администратор}">
                 <TabItem.Resources>
                     <!--#region Общий стиль для DaraGrid -->
                     <Style TargetType="DataGrid">

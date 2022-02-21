@@ -39,12 +39,35 @@ namespace IDensity.Models
         int _portNum;
         public int PortNum { get => _portNum; set => Set(ref _portNum, value); }
         #endregion
+
+        #region Время между тайм-аутами
+        int _askDelay;
+        public int AskDelay
+        {
+            get => _askDelay;
+            set => Set(ref _askDelay, value);
+        }
+
+        #endregion
+
+        #region Циклический опрос
+        private bool _cyclicAsk;
+
+        public bool CyclicAsk
+        {
+            get { return _cyclicAsk; }
+            set { Set(ref _cyclicAsk, value); }
+        } 
+        #endregion
+
         #endregion
 
         #region Поля       
 
         MainModel model;
-
+        public bool askMeas;
+        public bool askTelemetry;
+        
         int indexAm = 0;
 
         /// <summary>
@@ -110,14 +133,19 @@ namespace IDensity.Models
                     Connect();
                     return;
                 }
-                GetDeviceStatus();
-                GetCurDateTime();
-                GetCurMeas();
-                GetPeriphTelemetry();
-                GetHalfPeriodStandartisation();
-                //GetAmTelemetry();
-                //GetHVTelemetry();
-                //GetTempTelemetry();                
+                if (CyclicAsk || askTelemetry)
+                {
+                    GetPeriphTelemetry();
+                    GetDeviceStatus();
+                    GetCurDateTime();
+                    askTelemetry = false;
+                }
+                if (CyclicAsk || askMeas)
+                {
+                    GetCurMeas();
+                    GetHalfPeriodStandartisation();
+                    askMeas = false;
+                }                                         
                 GetSetiings();
                 while (commands.Count > 0)
                 {
@@ -133,6 +161,7 @@ namespace IDensity.Models
             {
                 if (++errCommCount >= 5)
                 {
+                    errCommCount = 0;
                     TcpEvent?.Invoke(ex.Message);
                     commands?.Clear();
                     Disconnect();
@@ -202,10 +231,11 @@ namespace IDensity.Models
             do
             {
                 num = stream.Read(inBuf, offset, inBuf.Length);
-                Thread.Sleep(100);
+                Thread.Sleep(10);
                 offset += num;
 
             } while (stream.DataAvailable);
+            Thread.Sleep(AskDelay);
             model.Connecting.Value = true;
            
             return Encoding.ASCII.GetString(inBuf, 0, num);// Получаем строку из байт;            
@@ -223,7 +253,7 @@ namespace IDensity.Models
                 num = stream.Read(inBuf, 0, inBuf.Length);
 
             } while (stream.DataAvailable);
-            Thread.Sleep(100);
+            Thread.Sleep(AskDelay);
             model.Connecting.Value = true;
             return num;
         }
@@ -283,9 +313,7 @@ namespace IDensity.Models
 
                 if (model.CycleMeasStatus.Value)
                 {
-                    model.CountersCur[0].Value = nums[0];
-                    model.CountersCur[1].Value = nums[1];
-                    model.CountersCur[2].Value = nums[2];
+                    model.AdcBoardSettings.AdcProcMode.Value = 2;                    
                     model.PhysValueCur.Value = nums[6];
                     model.PhysValueAvg.Value = nums[7];
                     model.ContetrationValueAvg.Value = nums[9];
@@ -294,7 +322,9 @@ namespace IDensity.Models
                     model.ConsMassSolid.Value = nums[13];
                 }
                 model.ConsInputSettings.CurConsumtion.Value = nums[11];
-
+                model.CountersCur[0].Value = nums[0];
+                model.CountersCur[1].Value = nums[1];
+                model.CountersCur[2].Value = nums[2];
             }
         }
         #endregion
@@ -860,20 +890,37 @@ namespace IDensity.Models
         #endregion
 
         #region Команды изменения настроек платы АЦП
-        public void SetAdcBoardSettings(AdcBoardSettings settings)
+        public void SetAdcMode(ushort value)
         {
-            SwitchAdcBoard(0);            
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_mode={settings.AdcMode.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_proc_mode={settings.AdcProcMode.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_sync_mode={settings.AdcSyncMode.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_sync_level={settings.AdcSyncLevel.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,timer_max={settings.TimerMax.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,preamp_gain={settings.PreampGain.Value}#")));
-            SwitchAdcBoard(1);
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_mode={value}#")));
             commands.Enqueue(new TcpWriteCommand((buf) => GetSettings1(), null));
+        }
+        public void SetAdcProcMode(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_proc_mode={value}#")));
             commands.Enqueue(new TcpWriteCommand((buf) => GetSettings2(), null));
+        }
+        public void SetAdcSyncMode(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_sync_mode={value}#")));
+            commands.Enqueue(new TcpWriteCommand((buf) => GetSettings2(), null));
+        }
+        public void SetAdcSyncLevel(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_sync_level={value}#")));
+            commands.Enqueue(new TcpWriteCommand((buf) => GetSettings1(), null));
+        }
+        public void SetAdcTimerMax(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,timer_max={value}#")));
+            commands.Enqueue(new TcpWriteCommand((buf) => GetSettings1(), null));
+        }
+        public void SetPreampGain(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,preamp_gain={value}#")));
             commands.Enqueue(new TcpWriteCommand((buf) => GetSettings7(), null));
         }
+        
         #endregion
 
         #region Команда "Запуск-останов платы АЦП"

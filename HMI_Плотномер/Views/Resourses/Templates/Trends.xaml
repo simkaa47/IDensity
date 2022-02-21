@@ -28,24 +28,56 @@
                                       MajorGridlineStyle="Dot"
                                       FontSize="14"/>
             </oxy:Plot.Axes>
-            <oxy:ThreeColorLineSeries  LineStyle="Dash"
-                                           Visibility="{Binding ElementName=VisibleLine1, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine1, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
                                            ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
                                            DataFieldX="time" DataFieldY="y1"
-                                           Title="Усредненное значение"
-                                           Color="Black" ColorHi="Red" 
-                                           ColorLo="Blue" LimitHi="{Binding TrendSettings.PlotHighLimit}"
-                                           LimitLo="{Binding TrendSettings.PlotLowLimit}"                                             
-                                           LineStyleHi="Dash"/>
-            <oxy:ThreeColorLineSeries LineStyle="Automatic" 
-                                           Visibility="{Binding ElementName=VisibleLine2, Path=IsChecked, Converter={StaticResource VisibleConverter}}"           
+                                           Title="Cчетчик 0"
+                                           Color="Red"/>
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine2, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
                                            ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
-                                           DataFieldX="time" DataFieldY="y2" 
-                                           Color="Green"
-                                           Title="Мгновенное значение"
-                                           ColorHi="Green"
-                                           ColorLo="Green"
-                                           LineStyleHi="Dash"/>
+                                           DataFieldX="time" DataFieldY="y2"
+                                           Title="Cчетчик 1"
+                                           Color="Blue"/>
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine3, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
+                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
+                                           DataFieldX="time" DataFieldY="y3"
+                                           Title="Cчетчик 2"
+                                           Color="Green"/>
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine4, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
+                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
+                                           DataFieldX="time" DataFieldY="y4"
+                                           Title="Мгновенная плотность"
+                                           Color="Brown"/>
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine5, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
+                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
+                                           DataFieldX="time" DataFieldY="y5"
+                                           Title="Усредненная плотность"
+                                           Color="Black"/>
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine6, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
+                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
+                                           DataFieldX="time" DataFieldY="y6"
+                                           Title="Мгновенная концентрация"
+                                           Color="Yellow"/>
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine7, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
+                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
+                                           DataFieldX="time" DataFieldY="y7"
+                                           Title="Усредненная концентрация"
+                                           Color="Pink"/>
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine8, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
+                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
+                                           DataFieldX="time" DataFieldY="y8"
+                                           Title="Общий расход"
+                                           Color="Orange"/>
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine9, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
+                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
+                                           DataFieldX="time" DataFieldY="y9"
+                                           Title="Расход твердого"
+                                           Color="Purple"/>
+            <oxy:LineSeries                Visibility="{Binding ElementName=VisibleLine10, Path=IsChecked, Converter={StaticResource VisibleConverter}}"
+                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tag}"
+                                           DataFieldX="time" DataFieldY="y10"
+                                           Title="Напряжение HV"
+                                           Color="Aqua"/>
 
         </oxy:Plot>
     </ControlTemplate>

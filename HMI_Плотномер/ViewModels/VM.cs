@@ -537,6 +537,23 @@ namespace IDensity.ViewModels
             return result;
         }
 
+        #region Опрос измерения
+        private RelayCommand _askMeasCommand;
+
+        public RelayCommand AskMeasCommand => _askMeasCommand ?? (_askMeasCommand = new RelayCommand(o => mainModel.Tcp.askMeas = true, o => mainModel.Connecting.Value));
+        #endregion;
+
+        #region Опрос телеметрии
+        private RelayCommand _askTelCommand;
+
+        public RelayCommand AskTelCommand => _askTelCommand ?? (_askTelCommand = new RelayCommand(o => mainModel.Tcp.askTelemetry = true, o => mainModel.Connecting.Value));
+        #endregion;
+
+        #region Опрос настроек
+        private RelayCommand _askSetCommand;
+        public RelayCommand AskSetCommand => _askSetCommand ?? (_askSetCommand = new RelayCommand(o => mainModel.SettingsReaded = false, o => mainModel.Connecting.Value));
+        #endregion;
+
         #endregion
         public MainModel mainModel { get; } = new MainModel();
 
@@ -654,7 +671,8 @@ namespace IDensity.ViewModels
                 if (SingleMeasCurTime < 0)
                 {
                     SingelMeasFlag = false;
-                    singleMeasTimer = new System.Timers.Timer(2000);
+                    mainModel.Tcp.askMeas = true;
+                    singleMeasTimer = new System.Timers.Timer(3000);
                     singleMeasTimer.Elapsed += (s, e) =>
                     {
                         singleMeasTimer?.Stop();
@@ -996,6 +1014,11 @@ namespace IDensity.ViewModels
         public Pipe Pipe => _pipe ?? (_pipe = ClassInit<Pipe>());
         #endregion
 
+        #region Настройки видимости графиков
+        private TrendsVisible _trendsVisible;
+        public TrendsVisible TrendsVisible => _trendsVisible ?? (_trendsVisible = ClassInit<TrendsVisible>());
+        #endregion
+
         #region Вывести данные из БД
         async void ShowArchivalTrend()
         {
@@ -1023,7 +1046,18 @@ namespace IDensity.ViewModels
             App.Current?.Dispatcher?.Invoke(
                 () =>
                 {
-                    var tp = new TimePoint { time = DateTime.Now, y1 = mainModel.PhysValueAvg.Value, y2 = mainModel.PhysValueCur.Value };
+                    var tp = new TimePoint { time = DateTime.Now, 
+                        y1 = mainModel.CountersCur[0].Value, 
+                        y2 = mainModel.CountersCur[1].Value,
+                        y3 = mainModel.CountersCur[2].Value,
+                        y4 = mainModel.PhysValueCur.Value,
+                        y5 = mainModel.PhysValueAvg.Value,
+                        y6 = mainModel.ContetrationValueCur.Value,
+                        y7 = mainModel.ContetrationValueAvg.Value,
+                        y8 = mainModel.ConsMassCommon.Value,
+                        y9 = mainModel.ConsMassSolid.Value,
+                        y10 = mainModel.TelemetryHV.VoltageCurOut.Value
+                    };
                     PlotCollection.Add(tp);
                     while (PlotCollection.Count>0 && PlotCollection[0].time < DateTime.Now.AddMinutes(TrendSettings.PlotTime * (-1)))
                     {
@@ -1118,7 +1152,10 @@ namespace IDensity.ViewModels
                     StringBuilder builder = new StringBuilder();
                     foreach (var item in ArchivalDataPotnts)
                     {
-                        builder.Append(item.time.ToString("dd/MM/yyyy HH:mm:ss:f") + "\t" + item.y1.ToString("0.000") + "\t" + item.y2.ToString("0.000" + "\n"));
+                        builder.Append(item.time.ToString("dd/MM/yyyy HH:mm:ss:f") + "\t" + item.y1.ToString("0.000") + "\t" + item.y2.ToString("0.000") + "\t"
+                            + item.y3.ToString("0.000") + "\t" + item.y4.ToString("0.000") + "\t"
+                            + item.y5.ToString("0.000") + "\t" + item.y6.ToString("0.000") + "\t"
+                            + item.y7.ToString("0.000") + "\t" + item.y8.ToString("0.000") + "\t" + item.y9.ToString("0.000") + "\t" + item.y10.ToString("0.000") + "\n");
                     }
                     using (StreamWriter sw = new StreamWriter(LogPath, false, System.Text.Encoding.Default))
                     {
