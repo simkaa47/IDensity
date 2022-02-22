@@ -283,7 +283,13 @@ namespace IDensity.Models
         /// </summary>
         void AdcSettingsEventDescribe()
         {
-            AdcBoardSettings.SettingsChangedEvent += SetAdcBoardSettings;            
+            AdcBoardSettings.SettingsChangedEvent += SetAdcBoardSettings;
+            AdcBoardSettings.AdcModeChangedEvent += SetAdcMode;
+            AdcBoardSettings.AdcProcModeChangedEvent += SetAdcProcMode;
+            AdcBoardSettings.AdcSyncLevelChangedEvent += SetAdcSyncLevel;
+            AdcBoardSettings.AdcSyncModeChangedEvent += SetAdcSyncMode;
+            AdcBoardSettings.PreampGainChangedEvent += SetPreampGain;
+            AdcBoardSettings.TimerMaxChangedEvent += SetAdcTimerMax;
         }
         #endregion
         #endregion
@@ -554,8 +560,31 @@ namespace IDensity.Models
         #region Команды изменения настроек платы АЦП
         public void SetAdcBoardSettings(AdcBoardSettings settings)
         {
-            if (CommMode.EthEnable) Tcp.SetAdcBoardSettings(settings);
-            else if (CommMode.RsEnable) rs.SetAdcBoardSettings(settings);
+            if (CommMode.RsEnable) rs.SetAdcBoardSettings(settings);
+        }
+        public void SetAdcMode(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetAdcMode(value);
+        }
+        public void SetAdcProcMode(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetAdcProcMode(value);
+        }
+        public void SetAdcSyncMode(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetAdcSyncMode(value);
+        }
+        public void SetAdcSyncLevel(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetAdcSyncLevel(value);
+        }
+        public void SetAdcTimerMax(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetAdcTimerMax(value);
+        }
+        public void SetPreampGain(ushort value)
+        {
+            if (CommMode.EthEnable) Tcp.SetPreampGain(value);
         }
         #endregion
 

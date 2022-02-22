@@ -114,10 +114,7 @@ namespace IDensity.Models
                 GetCurDateTime();
                 GetCurMeas();
                 GetPeriphTelemetry();
-                GetHalfPeriodStandartisation();
-                //GetAmTelemetry();
-                //GetHVTelemetry();
-                //GetTempTelemetry();                
+                GetHalfPeriodStandartisation();                               
                 GetSetiings();
                 while (commands.Count > 0)
                 {
@@ -250,18 +247,19 @@ namespace IDensity.Models
                 .Where(str => float.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out temp)).
                 Select(str => temp).
                 ToArray();
-            if (nums.Length == 12)
+            if (nums.Length == 13)
             {
-                model.TempTelemetry.TempInternal.Value = nums[0]/10;
-                model.TelemetryHV.VoltageCurIn.Value = nums[1];
-                model.TelemetryHV.VoltageCurOut.Value = (ushort)nums[2];
+                model.TempTelemetry.TempExternal.Value = nums[0] / 10;
+                model.TempTelemetry.TempInternal.Value = nums[1]/10;
+                model.TelemetryHV.VoltageCurIn.Value = nums[2];
+                model.TelemetryHV.VoltageCurOut.Value = (ushort)nums[3];
                 model.TelemetryHV.HvOn.Value = model.TelemetryHV.VoltageCurOut.Value > 100;
                 for (int i = 0; i < 2; i++)
                 {
-                    model.AnalogGroups[i].AO.VoltageDac.Value = (ushort)nums[4 + i*4];
-                    model.AnalogGroups[i].AO.VoltageTest.Value = (ushort)nums[4 + i * 4 + 1];
-                    model.AnalogGroups[i].AO.AdcValue.Value = (ushort)nums[4 + i * 4 + 2];
-                    model.AnalogGroups[i].AI.AdcValue.Value = (ushort)nums[4 + i * 4 + 3];
+                    model.AnalogGroups[i].AO.VoltageDac.Value = (ushort)nums[5 + i*4];
+                    model.AnalogGroups[i].AO.VoltageTest.Value = (ushort)nums[5 + i * 4 + 1];
+                    model.AnalogGroups[i].AO.AdcValue.Value = (ushort)nums[5 + i * 4 + 2];
+                    model.AnalogGroups[i].AI.AdcValue.Value = (ushort)nums[5 + i * 4 + 3];
                 }
             }
         }
@@ -860,20 +858,37 @@ namespace IDensity.Models
         #endregion
 
         #region Команды изменения настроек платы АЦП
-        public void SetAdcBoardSettings(AdcBoardSettings settings)
+        public void SetAdcMode(ushort value)
         {
-            SwitchAdcBoard(0);            
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_mode={settings.AdcMode.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_proc_mode={settings.AdcProcMode.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_sync_mode={settings.AdcSyncMode.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_sync_level={settings.AdcSyncLevel.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,timer_max={settings.TimerMax.Value}#")));
-            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,preamp_gain={settings.PreampGain.Value}#")));
-            SwitchAdcBoard(1);
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_mode={value}#")));
             commands.Enqueue(new TcpWriteCommand((buf) => GetSettings1(), null));
+        }
+        public void SetAdcProcMode(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_proc_mode={value}#")));
             commands.Enqueue(new TcpWriteCommand((buf) => GetSettings2(), null));
+        }
+        public void SetAdcSyncMode(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_sync_mode={value}#")));
+            commands.Enqueue(new TcpWriteCommand((buf) => GetSettings2(), null));
+        }
+        public void SetAdcSyncLevel(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,adc_sync_level={value}#")));
+            commands.Enqueue(new TcpWriteCommand((buf) => GetSettings1(), null));
+        }
+        public void SetAdcTimerMax(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,timer_max={value}#")));
+            commands.Enqueue(new TcpWriteCommand((buf) => GetSettings1(), null));
+        }
+        public void SetPreampGain(ushort value)
+        {
+            commands.Enqueue(new TcpWriteCommand((buf) => SendTlg(buf), Encoding.ASCII.GetBytes($"SETT,preamp_gain={value}#")));
             commands.Enqueue(new TcpWriteCommand((buf) => GetSettings7(), null));
         }
+
         #endregion
 
         #region Команда "Запуск-останов платы АЦП"

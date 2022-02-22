@@ -336,8 +336,8 @@ namespace IDensity.Models
         #region Запрос телеметрии от платы температуры
         void GetTempTelemetry()
         {
-            model.TempTelemetry.TempExternal.Value = ((float)(SelectRegs(model.TempTelemetry.TempExternal.RegType)[model.TempTelemetry.TempExternal.RegNum] - 2730)) / 10;
-            model.TempTelemetry.TempInternal.Value = ((float)(SelectRegs(model.TempTelemetry.TempInternal.RegType)[model.TempTelemetry.TempInternal.RegNum] - 2730)) / 10;
+            model.TempTelemetry.TempExternal.Value = ((float)(SelectRegs(model.TempTelemetry.TempExternal.RegType)[model.TempTelemetry.TempExternal.RegNum])) / 100;
+            model.TempTelemetry.TempInternal.Value = ((float)(SelectRegs(model.TempTelemetry.TempInternal.RegType)[model.TempTelemetry.TempInternal.RegNum])) / 100;
         }
         #endregion
 
