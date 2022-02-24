@@ -249,8 +249,8 @@ namespace IDensity.Models
                 ToArray();
             if (nums.Length == 13)
             {
-                model.TempTelemetry.TempExternal.Value = nums[0] / 10;
-                model.TempTelemetry.TempInternal.Value = nums[1]/10;
+                model.TempTelemetry.TempExternal.Value = nums[0];
+                model.TempTelemetry.TempInternal.Value = nums[1];
                 model.TelemetryHV.VoltageCurIn.Value = nums[2];
                 model.TelemetryHV.VoltageCurOut.Value = (ushort)nums[3];
                 model.TelemetryHV.HvOn.Value = model.TelemetryHV.VoltageCurOut.Value > 100;
@@ -313,32 +313,7 @@ namespace IDensity.Models
             }
 
         }
-        #endregion
-
-        #region Запрос телеметрии от Платы HV
-        void GetHVTelemetry()
-        {
-            int byteNum = AskResponseBytes(Encoding.ASCII.GetBytes("CMND,HVT"));
-            if (byteNum != 13) return;
-            model.TelemetryHV.VoltageSV.Value = (ushort)((inBuf[2] + inBuf[3] * 256) * 0.05);
-            model.TelemetryHV.VoltageCurIn.Value = (inBuf[4] + (float)inBuf[5] * 256) / 1000;
-            model.TelemetryHV.VoltageCurOut.Value = (ushort)((inBuf[6] + inBuf[7] * 256) * 0.05);
-            model.TelemetryHV.Current.Value = (ushort)(inBuf[8] + inBuf[9] * 256);
-            model.TelemetryHV.HvOn.Value = model.TelemetryHV.VoltageCurOut.Value > 100;
-        }
-        #endregion
-
-        #region Запрос телеметрии от платы температуры
-        void GetTempTelemetry()
-        {
-            int byteNum = AskResponseBytes(Encoding.ASCII.GetBytes("CMND,TET"));
-            if (byteNum == 9)
-            {
-                model.TempTelemetry.TempExternal.Value = ((float)(BitConverter.ToInt16(inBuf, 2) - 2730)) / 10;
-                model.TempTelemetry.TempInternal.Value = ((float)(BitConverter.ToInt16(inBuf, 4) - 2730)) / 10;
-            }
-        }
-        #endregion
+        #endregion              
 
         #region Запрос статусов устройств
         void GetDeviceStatus()
