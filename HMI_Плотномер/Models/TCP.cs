@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -76,7 +77,8 @@ namespace IDensity.Models
         int errCommCount = 0;
 
         #region Клиент
-        TcpClient client;
+        IPEndPoint remoteIp = null;
+        UdpClient client = new UdpClient();
         #endregion
 
         #region Буффер входящих данных
@@ -97,12 +99,17 @@ namespace IDensity.Models
         void Connect()
         {
             commands?.Clear();
-            client = new TcpClient();
-            client.ReceiveTimeout = 2000;
-            TcpEvent?.Invoke(($"Выполняется подключение к {IP}:{PortNum}"));
-            client.Connect(IP, PortNum);            
-            TcpEvent?.Invoke(($"Произведено подключение к {IP}:{PortNum}"));
-            stream = client.GetStream();
+            
+            //client = new TcpClient();
+            //client.SendTimeout = 5000;
+            //client.ReceiveTimeout = 5000;
+            //client.Client.ExclusiveAddressUse = true;
+            //client.LingerState.Enabled = true;
+            //client.LingerState.LingerTime = 5000;
+            //TcpEvent?.Invoke(($"Выполняется подключение к {IP}:{PortNum}"));
+            //client.Connect(IP, PortNum);            
+            //TcpEvent?.Invoke(($"Произведено подключение к {IP}:{PortNum}"));
+            //stream = client.GetStream();
 
         }
         #endregion
@@ -110,14 +117,14 @@ namespace IDensity.Models
         #region Дисконнект
         public void Disconnect()
         {
-            if (client != null)
-            {
+            //if (client != null)
+            //{
                
-                TcpEvent?.Invoke($"{IP}:{PortNum}: соединение завершено пользователем");
-                client.Close();
-                client.Dispose();
-                model.Connecting.Value = client.Connected;
-            }
+            //    TcpEvent?.Invoke($"{IP}:{PortNum}: соединение завершено пользователем");
+            //    client.Close();
+            //    client.Dispose();
+            //    model.Connecting.Value = client.Connected;
+            //}
 
         }
         #endregion        
@@ -127,26 +134,30 @@ namespace IDensity.Models
         {
             try
             {
-                this.model = model;
-                if (client == null || !client.Connected)
-                {
-                    Connect();
-                    return;
-                }
-                if (CyclicAsk || askTelemetry)
-                {
-                    GetPeriphTelemetry();
-                    GetDeviceStatus();
-                    GetCurDateTime();
-                    askTelemetry = false;
-                }
-                if (CyclicAsk || askMeas)
-                {
-                    GetCurMeas();
-                    GetHalfPeriodStandartisation();
-                    askMeas = false;
-                }                                         
-                GetSetiings();
+                byte[] bytes = Encoding.ASCII.GetBytes("CMND,AMC#");
+                client.Send(bytes, bytes.Length, IP, 49050);
+                
+                byte[] data = client.Receive(ref remoteIp);
+                //this.model = model;
+                //if (client == null || !client.Connected)
+                //{
+                //    Connect();
+                //    return;
+                //}
+                //if (CyclicAsk || askTelemetry)
+                //{
+                //    GetPeriphTelemetry();
+                //    GetDeviceStatus();
+                //    GetCurDateTime();
+                //    askTelemetry = false;
+                //}
+                //if (CyclicAsk || askMeas)
+                //{
+                //    GetCurMeas();
+                //    GetHalfPeriodStandartisation();
+                //    askMeas = false;
+                //}                                         
+                //GetSetiings();
                 while (commands.Count > 0)
                 {
                     var command = commands.Dequeue();
@@ -154,7 +165,7 @@ namespace IDensity.Models
                     Thread.Sleep(50);
                 }
                 errCommCount = 0;
-                model.Connecting.Value = client.Connected;
+                //model.Connecting.Value = client.Connected;
 
             }
             catch (Exception ex)
@@ -199,12 +210,12 @@ namespace IDensity.Models
         {
             try
             {
-                if (client != null && client.Connected)
-                {
-                    StreamClear();
-                    stream?.Write(buffer, 0, buffer.Length);
-                    Thread.Sleep(100);
-                }
+                //if (client != null && client.Connected)
+                //{
+                //    StreamClear();
+                //    stream?.Write(buffer, 0, buffer.Length);
+                //    Thread.Sleep(100);
+                //}
             }
             catch (Exception ex)
             {
@@ -300,7 +311,7 @@ namespace IDensity.Models
         #region Запрос текущего значения измерения
         void GetCurMeas()
         {
-            var str = AskResponse(Encoding.ASCII.GetBytes("CMND,AMC"));
+            var str = AskResponse(Encoding.ASCII.GetBytes("CMND,AMC#"));
             str = str.TrimEnd(new char[] { '#' }).Substring(5);
             float temp = 0;
             var nums = str.Split(new char[] { ',' })
@@ -392,11 +403,17 @@ namespace IDensity.Models
             if (!model.SettingsReaded)
             {
                 GetMeasProcessData();// Получить данные процеса измерений
+                GetCurMeas();
                 GetStdSettings();
+                GetCurMeas();
                 GetSettings2();
+                GetCurMeas();
                 GetCalibrCoeffs();
+                GetCurMeas();
                 GetSettings7();
+                GetCurMeas();
                 GetSettings1();
+                GetCurMeas();
                 GetSettings4();
 
             } 
